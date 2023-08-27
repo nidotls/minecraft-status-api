@@ -1,12 +1,16 @@
 package gg.nils.minecraftstatusapi.model;
 
-import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import java.time.Instant;
 
@@ -14,31 +18,26 @@ import java.time.Instant;
 @Setter
 @ToString
 @RequiredArgsConstructor
-@Entity
-@Table
+@Document("pings")
 public class Ping {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+    private ObjectId id;
 
-    @ManyToOne
-    @JoinColumn(name = "server_id", nullable = false)
+    @DocumentReference(lazy = true)
     private Server server;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
+    @DocumentReference(lazy = true)
     private DataCollector dataCollector;
 
-    @Column(name = "count", nullable = false)
+    @NotNull
     private Long count;
 
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false)
+    @NotNull
+    @CreatedDate
     private Instant createdAt;
 
-    @UpdateTimestamp
-    @Column(name = "updated_at", nullable = false)
+    @NotNull
+    @LastModifiedDate
     private Instant updatedAt;
 }

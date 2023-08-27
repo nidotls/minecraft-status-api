@@ -1,68 +1,72 @@
 package gg.nils.minecraftstatusapi.model;
 
-import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import org.hibernate.Hibernate;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import lombok.*;
+import org.bson.types.ObjectId;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
 import java.util.Objects;
 
+@Data
+@Builder
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
-@Entity
-@Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = "name")
+@AllArgsConstructor
+@Document("servers")
+@CompoundIndexes({
+        @CompoundIndex(useGeneratedName = true, unique = true, def = "{'name': 1}")
 })
 public class Server {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+    private ObjectId id;
+
+    @Nullable
+    private Long oldId;
 
     @NotNull
-    @Column(nullable = false)
     private String name;
 
     @NotNull
-    @Column(nullable = false)
     private String address;
 
     @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private Type type;
 
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false)
+    private boolean archived = false;
+
+    @NotNull
+    @CreatedDate
     private Instant createdAt;
 
-    @UpdateTimestamp
-    @Column(name = "updated_at", nullable = false)
+    @NotNull
+    @LastModifiedDate
     private Instant updatedAt;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         Server server = (Server) o;
-        return id != null && Objects.equals(id, server.id);
+
+        return Objects.equals(id, server.id);
     }
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return id != null ? id.hashCode() : 0;
     }
 
-    public static enum Type {
+    public enum Type {
         JAVA,
         BEDROCK
     }
