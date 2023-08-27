@@ -21,7 +21,6 @@ public class DataCollectorController {
 
     @PostMapping("/v1/datacollector/register")
     public DataCollector register(@Valid @RequestBody DataCollectorRegisterDto data) {
-
         DataCollector dataCollector = new DataCollector();
         dataCollector.setName(NameGenerator.generate());
         dataCollector.setEmail(data.getEmail());
