@@ -13,8 +13,8 @@ public class PingSubmitDto {
     private String token;
 
     @NotNull
-    @Min(1)
-    private Long serverId;
+    @NotBlank
+    private String serverId;
 
     @NotNull
     @Min(0)

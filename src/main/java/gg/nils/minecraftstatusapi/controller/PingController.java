@@ -9,6 +9,7 @@ import gg.nils.minecraftstatusapi.repository.DataCollectorRepository;
 import gg.nils.minecraftstatusapi.repository.PingRepository;
 import gg.nils.minecraftstatusapi.repository.ServerRepository;
 import jakarta.validation.Valid;
+import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,7 +41,11 @@ public class PingController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        return ResponseEntity.ok(this.serverRepository.findAll());
+        List<Server> result = this.serverRepository.findAll().stream()
+                .filter(server -> !server.isArchived())
+                .toList();
+
+        return ResponseEntity.ok(result);
     }
 
     @PostMapping("/v1/ping/submit")
@@ -51,10 +56,18 @@ public class PingController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        Optional<Server> optionalServer = this.serverRepository.findById(data.getServerId());
+        if (!ObjectId.isValid(data.getServerId())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
+        Optional<Server> optionalServer = this.serverRepository.findById(new ObjectId(data.getServerId()));
 
         if (optionalServer.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        if (optionalServer.get().isArchived()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
         Server server = optionalServer.get();

@@ -1,8 +1,9 @@
 package gg.nils.minecraftstatusapi.repository;
 
 import gg.nils.minecraftstatusapi.model.Ping;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface PingRepository extends JpaRepository<Ping, Long> {
+public interface PingRepository extends MongoRepository<Ping, ObjectId> {
 
 }
