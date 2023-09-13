@@ -56,7 +56,7 @@ jobs:
       # push latest docker image
       - name: Docker meta
         id: meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           images: ${{ env.IMAGE_NAME }}
           sep-tags: ","
