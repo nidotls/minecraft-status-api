@@ -1,8 +1,13 @@
 package gg.nils.minecraftstatusapi.repository;
 
 import gg.nils.minecraftstatusapi.model.Server;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface ServerRepository extends JpaRepository<Server, Long> {
+import java.util.Optional;
+
+public interface ServerRepository extends MongoRepository<Server, ObjectId> {
+
+    Optional<Server> findByName(String name);
 
 }

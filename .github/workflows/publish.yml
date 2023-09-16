@@ -2,8 +2,6 @@ name: Publish Container
 
 on:
   push:
-    branches:
-      - '*'
 
 env:
   IMAGE_NAME: "minecraft-status-api"

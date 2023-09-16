@@ -6,7 +6,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class NameGenerator {
 
-    private static List<String> ADJECTIVES = Arrays.asList(
+    private static final List<String> ADJECTIVES = Arrays.asList(
             "amazing",
             "awesome",
             "big",
@@ -45,7 +45,7 @@ public class NameGenerator {
             "wet"
     );
 
-    private static List<String> ITEMS = Arrays.asList(
+    private static final List<String> ITEMS = Arrays.asList(
             "apple",
             "beacon",
             "bedrock",
