@@ -5,6 +5,7 @@ import gg.nils.minecraftstatusapi.repository.PingRepository;
 import gg.nils.minecraftstatusapi.repository.ServerPlayerCountRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 import java.util.concurrent.Executor;
@@ -12,6 +13,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@RestController
 public class MigrateController {
 
     private final PingRepository pingRepository;
