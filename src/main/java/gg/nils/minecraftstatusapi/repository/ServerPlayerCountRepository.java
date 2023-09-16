@@ -20,9 +20,9 @@ public interface ServerPlayerCountRepository extends MongoRepository<ServerPlaye
                     "                      date: '$timestamp'," +
                     "                      format: '%Y-%m-%d'," +
                     "                      timezone: 'Europe/Berlin'} } }," +
-                    "    min: {$min: '$count'}," +
-                    "    max: {$max: '$count'}," +
-                    "    avg: {$avg: '$count'}        } }",
+                    "    min: {$min: '$value'}," +
+                    "    max: {$max: '$value'}," +
+                    "    avg: {$avg: '$value'}        } }",
             "{ $project: { date: '$_id.date', min: 1, max: 1, avg: 1, _id: 0 } }",
             "{ $sort: { date: 1 } }"
     })
@@ -32,9 +32,9 @@ public interface ServerPlayerCountRepository extends MongoRepository<ServerPlaye
             "{ $match: { 'metadata.server': :#{#server.getId()}," +
                     "    timestamp:         { $gte: ?1, $lt: ?2 } } }",
             "{ $bucket: { groupBy: '$timestamp', boundaries: ?3, output: {" +
-                    "     min: {$min: '$count'}," +
-                    "     max: {$max: '$count'}," +
-                    "     avg: {$avg: '$count'}" +
+                    "     min: {$min: '$value'}," +
+                    "     max: {$max: '$value'}," +
+                    "     avg: {$avg: '$value'}" +
                     " } } }",
             "{ $project: { date: '$_id', min: 1, max: 1, avg: 1, _id: 0 } }",
             "{ $sort: { date : 1 } }"
