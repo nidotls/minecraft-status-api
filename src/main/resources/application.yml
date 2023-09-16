@@ -8,6 +8,8 @@ spring:
     mongodb:
       uri: "${MONGODB_URI}"
       auto-index-creation: true
+  devtools:
+    add-properties: false
 management:
   endpoint:
     health:
