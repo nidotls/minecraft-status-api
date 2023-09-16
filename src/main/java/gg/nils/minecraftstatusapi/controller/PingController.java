@@ -158,11 +158,7 @@ public class PingController {
 
         List<Instant> boundaries = Stream.iterate(startDate, d -> d.plusDays(1))
                 .limit(days)
-                .map(localDate -> {
-                    LocalDateTime localDateTime = localDate.atTime(LocalTime.MIN);
-                    ZoneOffset zoneOffset = ZoneOffset.from(localDateTime);
-                    return localDateTime.toInstant(zoneOffset);
-                })
+                .map(localDate -> localDate.atTime(LocalTime.MIN).toInstant(ZoneOffset.UTC))
                 .collect(Collectors.toList());
 
         Instant from = boundaries.get(0);
