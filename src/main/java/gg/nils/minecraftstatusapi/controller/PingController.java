@@ -2,10 +2,7 @@ package gg.nils.minecraftstatusapi.controller;
 
 import gg.nils.minecraftstatusapi.dto.PingSubmitDto;
 import gg.nils.minecraftstatusapi.dto.PingTargetsDto;
-import gg.nils.minecraftstatusapi.model.DataCollector;
-import gg.nils.minecraftstatusapi.model.Ping;
-import gg.nils.minecraftstatusapi.model.ServerPlayerCount;
-import gg.nils.minecraftstatusapi.model.Server;
+import gg.nils.minecraftstatusapi.model.*;
 import gg.nils.minecraftstatusapi.repository.DataCollectorRepository;
 import gg.nils.minecraftstatusapi.repository.PingRepository;
 import gg.nils.minecraftstatusapi.repository.ServerPlayerCountRepository;
@@ -111,7 +108,7 @@ public class PingController {
             return ResponseEntity.notFound().build();
         }
 
-        List<Document> documents = this.pingRepository.getPingsGroupedByDayFor(server.get(), Instant.now().minus(7, ChronoUnit.DAYS), Instant.now());
+        List<PingGroupedByDay> documents = this.pingRepository.getPingsGroupedByDayFor(server.get(), Instant.now().minus(7, ChronoUnit.DAYS), Instant.now());
 
         long took = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start);
 

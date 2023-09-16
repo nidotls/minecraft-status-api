@@ -1,6 +1,7 @@
 package gg.nils.minecraftstatusapi.repository;
 
 import gg.nils.minecraftstatusapi.model.Ping;
+import gg.nils.minecraftstatusapi.model.PingGroupedByDay;
 import gg.nils.minecraftstatusapi.model.Server;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -22,7 +23,8 @@ public interface PingRepository extends MongoRepository<Ping, ObjectId> {
                     "                      timezone: \"Europe/Berlin\"} } }," +
                     "    min: {$min: \"$count\",}," +
                     "    max: {$max: \"$count\",}," +
-                    "    avg: {$avg: \"$count\"}        } }"
+                    "    avg: {$avg: \"$count\"}        } }",
+            "{ $project: { server: '$_id.server', date: '$_id.date', min: 1, max: 1, avg: 1, _id: 0 } }"
     })
-    List<Document> getPingsGroupedByDayFor(Server server, Instant timeGte, Instant timeLt);
+    List<PingGroupedByDay> getPingsGroupedByDayFor(Server server, Instant timeGte, Instant timeLt);
 }
