@@ -17,12 +17,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.Instant;
+import java.time.*;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 public class PingController {
@@ -118,15 +121,61 @@ public class PingController {
         ));
     }
 
-    @GetMapping("/v1/ping/summary/new")
-    public ResponseEntity<?> newSummary() {
+    @GetMapping("/v1/ping/summary/new1")
+    public ResponseEntity<?> newOneSummary() {
         long start = System.nanoTime();
 
         Optional<Server> server = this.serverRepository.findByName("opsucht-java");
 
-        // TODO: 16.09.2023
+        if (server.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
 
-        return ResponseEntity.ok("");
+        List<PingGroupedByDay> documents = this.serverPlayerCountRepository.getPingsGroupedByDayFor(server.get(), Instant.now().minus(7, ChronoUnit.DAYS), Instant.now());
+
+        long took = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start);
+
+        return ResponseEntity.ok(Map.of(
+                "took", took,
+                "data", documents
+        ));
+    }
+
+    @GetMapping("/v1/ping/summary/new2")
+    public ResponseEntity<?> newTwoSummary() {
+        long start = System.nanoTime();
+
+        Optional<Server> server = this.serverRepository.findByName("opsucht-java");
+
+        if (server.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        LocalDate startDate = LocalDate.now().minusDays(7);
+        LocalDate endDate = LocalDate.now().plusDays(1);
+
+        int days = (int) startDate.until(endDate, ChronoUnit.DAYS);
+
+        List<Instant> boundaries = Stream.iterate(startDate, d -> d.plusDays(1))
+                .limit(days)
+                .map(localDate -> {
+                    ZoneOffset zoneOffset = ZoneOffset.from(localDate);
+
+                    return localDate.atTime(LocalTime.MIN).toInstant(zoneOffset);
+                })
+                .collect(Collectors.toList());
+
+        Instant from = boundaries.get(0);
+        Instant to = boundaries.get(boundaries.size() - 1);
+
+        List<PingGroupedByDay> documents = this.serverPlayerCountRepository.findBuckets(server.get(), from, to, boundaries);
+
+        long took = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start);
+
+        return ResponseEntity.ok(Map.of(
+                "took", took,
+                "data", documents
+        ));
     }
 
     // TEST ENDPOINTS END
