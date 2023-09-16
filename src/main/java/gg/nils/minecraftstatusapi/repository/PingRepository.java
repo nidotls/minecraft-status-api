@@ -24,7 +24,8 @@ public interface PingRepository extends MongoRepository<Ping, ObjectId> {
                     "    min: {$min: \"$count\",}," +
                     "    max: {$max: \"$count\",}," +
                     "    avg: {$avg: \"$count\"}        } }",
-            "{ $project: { server: '$_id.server', date: '$_id.date', min: 1, max: 1, avg: 1, _id: 0 } }"
+            "{ $project: { server: '$_id.server', date: '$_id.date', min: 1, max: 1, avg: 1, _id: 0 } }",
+            "{ $sort: { date: 1 }"
     })
     List<PingGroupedByDay> getPingsGroupedByDayFor(Server server, Instant timeGte, Instant timeLt);
 }
