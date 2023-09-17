@@ -154,7 +154,7 @@ public class PingController {
         LocalDate startDate = LocalDate.now().minusDays(7);
         LocalDate endDate = LocalDate.now().plusDays(1);
 
-        int days = (int) startDate.until(endDate, ChronoUnit.DAYS);
+        int days = (int) startDate.until(endDate, ChronoUnit.DAYS) + 1;
 
         List<Instant> boundaries = Stream.iterate(startDate, d -> d.plusDays(1))
                 .limit(days)
